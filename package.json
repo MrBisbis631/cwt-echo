@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node --watch --env-file=.env index.js",
-    "migrate:up": "npx sequelize-cli db:migrate"
+    "db:init": "npx sequelize-cli db:migrate",
+    "db:seed": "npx sequelize-cli db:seed:all"
     },
   "author": "",
   "license": "ISC",
