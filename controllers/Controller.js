@@ -1,66 +1,136 @@
+// CRUD interface for `models`
 export class Controller {
-  constructor(route, model) {
-    this.route = route;
+  /**
+   * @param {object} model `sequelize` model
+   */
+  constructor(model) {
     this.model = model;
   }
+  /**
+   * handle
+   * @param {Function} renderer render function - gets the model payload and returns its view
+   * @param {object} loadOption loading instance configuration
+   * @param {object} renderOption rendering configuration, eg. instance name
+   * @returns callback for a route
+   */
+  get(renderer, loadOption, renderOption) {
+    return async (_, res) => {
+      const instances = await this.model.findAll({
+        order: [["createdAt", "DESC"]],
+        ...loadOption,
+      });
 
-  GET(req, res) {
-    const id = req.params.id;
+      if (renderer) {
+        res.header("Content-Type", "text/html");
 
-    this.model.findById(id, (err, data) => {
-      if (err) {
-        res.status(500).send(err);
-      } else if (!data) {
-        res.status(404).send("Not Found");
-      } else {
-        res.status(200).json(data);
+        return res.send(
+          renderer({
+            [renderOption.modelPayloadName ?? Controller.modelName]: instances,
+          })
+        );
       }
-    });
+
+      res.header("Content-Type", "application/json");
+
+      return res.json(instances);
+    };
   }
 
-  POST(req, res) {
-    const newData = new this.model(req.body);
+  /**
+   * handle one instance of `model`
+   * @param {Function} renderer render function - gets the model payload and returns its view
+   * @param {object} loadOption loading instance configuration
+   * @param {object} renderOption rendering configuration, eg. instance name
+   * @returns callback for a route
+   */
+  getOne(renderer, loadOption, renderOption) {
+    return async (req, res) => {
+      const id = req.params[loadOption.paramIdName ?? "id"];
 
-    newData.save((err, data) => {
-      if (err) {
-        res.status(500).send(err);
-      } else {
-        res.status(201).json(this.model);
+      const instance = await this.model.findByPk(id, loadOption);
+
+      if (!instance) {
+        return res.status(404).send("Not found");
       }
-    });
+
+      if (renderer) {
+        res.header("Content-Type", "text/html");
+
+        return renderer({
+          [renderOption.modelPayloadName ?? this.model.modelName]: instance,
+        });
+      }
+
+      res.header("Content-Type", "application/json");
+
+      return res.json(instance);
+    };
   }
 
-  PUT(req, res) {
-    const id = req.params.id;
-    const updatedData = req.body;
+  /**
+   *
+   * @param {Function|string|number} redirectTo redirect callback evaluation or route
+   * @returns callback for a route
+   */
+  post(redirectTo) {
+    return async (req, res) => {
+      const data = req.data;
 
-    this.model.findByIdAndUpdate(
-      id,
-      updatedData,
-      { new: true },
-      (err, data) => {
-        if (err) {
-          res.status(500).send(err);
-        } else if (!data) {
-          res.status(404).send("Not Found");
-        } else {
-          res.status(200).json(data);
-        }
+      await this.model.create(data);
+
+      if (typeof redirectTo === "function") {
+        return res.redirect(redirectTo(req, res));
       }
-    );
+
+      return res.redirect(redirectTo);
+    };
   }
 
-  DELETE(req, res) {
-    const id = req.params.id;
+  /**
+   *
+   * @param {string|number|Function} redirectTo redirect uri or function evaluation for redirect uri
+   * @param {object} loadOption loading option in `sequelize`
+   * @returns router callback
+   */
+  put(redirectTo, loadOption) {
+    return async (req, res) => {
+      const id = req.params[loadOption.paramIdName ?? "id"];
 
-    this.model.findByIdAndDelete(id, (err, data) => {
-      if (err) {
-        res.status(500).send(err);
-      } else if (!data) {
-        res.status(404).send("Not Found");
-      } else {
-        res.status(200).send("Deleted Successfully");
+      await this.model.update(req.body, {
+        where: {
+          id,
+        },
+      });
+
+      if (typeof redirectTo === "function") {
+        return res.redirect(redirectTo(req, res));
       }
-    });
+
+      return res.redirect(redirectTo);
+    };
+  }
+
+  /**
+   *
+   * @param {string|number|Function} redirectTo redirect uri or function evaluation for redirect uri
+   * @param {object} loadOption loading option in `sequelize`
+   * @returns router callback
+   */
+  delete(redirectTo, loadOption) {
+    return async (req, res) => {
+      const id = req.params[loadOption.paramIdName ?? "id"];
+
+      await this.model.destroy({
+        where: {
+          id,
+        },
+      });
+
+      if (typeof redirectTo === "function") {
+        return res.redirect(redirectTo(req, res));
+      }
+
+      return res.redirect(redirectTo);
+    };
   }
 }
