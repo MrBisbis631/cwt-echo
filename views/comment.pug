@@ -1,0 +1,19 @@
+extends layout.pug
+
+block content 
+  h1.text-2xl.text-gray-800 #{quote.title}
+  blockquote
+    p.text-lg.text-gray-700 #{quote.content}
+    p.text-sm.text-gray-500.text-right.italic #{quote.author}
+  hr
+  h2.text-xl.font-semibold.text-blue-800 Comments
+  each comment in quote.comments
+    .comment
+      p.text-md.text-gray-700 #{comment.text}
+      p.text-sm.text-gray-500.text-right #{comment.author}
+      hr
+
+  form(action="./" + quote.id + "/comment" method="POST" class="flex flex-col gap-2")
+      label(for="text") Comment
+      textarea#text.border-2.border-gray-600(name="text" required)
+      button.rounded.shadow.px-3.py-2.text-bold.uppercase.bg-gray-800.text-white.mt-2(type="submit") Add Comment

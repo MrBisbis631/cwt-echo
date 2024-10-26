@@ -1,0 +1,24 @@
+extends layout.pug
+
+block content 
+  for quote in quotes 
+    div.max-w-xl
+      h2(class="text-lg text-gray-900 hover:underline") 
+        a(href="/" + quote.id) #{quote.title}
+      blockquote
+        p.text-gray-700 #{quote.content}
+        p.text-xm.text-gray-500.text-right.italic - #{quote.author}
+  hr
+  form.max-w-xl.mx-auto(action=`/quote` method="POST")
+    h2.text-xl.text-gray-900 Add a quote
+    div.flex.flex-col
+      label(for="title") Author
+      input.rounded.border-2.border-gray-400(type="text" name="title" id="title" required)
+    div.flex.flex-col
+      label(for="content") Comment
+      textarea.rounded.border-2.border-gray-400(name="content" id="content" rows="4" required)
+    div.flex.flex-col
+      label(for="author") Author
+      input.rounded.border-2.border-gray-400(type="text" name="author" id="author" required)
+    div
+      button.rounded.shadow.px-3.py-2.text-bold.uppercase.bg-gray-800.text-white.mt-2(type="submit") Submit

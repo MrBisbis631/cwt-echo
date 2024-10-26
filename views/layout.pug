@@ -1,0 +1,22 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    //- poppins font
+    link(href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap", rel="stylesheet")
+    //- alpinejs
+    script(src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.0/dist/alpine.min.js", defer) 
+    //- tailwindcss
+    script(src="https://cdn.tailwindcss.com")
+
+    title cwt echo
+    style.
+      body {
+        font-family: 'Poppins', sans-serif;
+      }
+  body
+    main.container.mx-auto.my-4.max-w-xl
+      h1.text-2xl
+        a(href="/", class="hover:underline") Cwt Echo
+      block content
