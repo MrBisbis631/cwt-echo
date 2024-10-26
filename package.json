@@ -9,12 +9,14 @@
     "env:init": "cp .env.example .env",
     "db:init": "npx sequelize-cli db:migrate",
     "db:seed": "npx sequelize-cli db:seed:all"
-    },
+  },
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "body-parser": "^1.20.3",
     "express": "^4.21.1",
+    "pug": "^3.0.3",
     "sequelize": "^6.37.4",
     "sqlite3": "^5.1.7"
   }
