@@ -7,6 +7,8 @@ block content
     p.text-sm.text-gray-500.text-right.italic #{quote.author}
   hr
   h2.text-xl.font-semibold.text-blue-800 Comments
+  if !quote.comments.length
+    p.text-gray-700 Be the first to comment!
   each comment in quote.comments
     .comment
       p.text-md.text-gray-700 #{comment.text}
@@ -15,5 +17,6 @@ block content
 
   form(action="./" + quote.id + "/comment" method="POST" class="flex flex-col gap-2")
       label(for="text") Comment
+      input(type="hidden" name="quoteId" value=quote.id)
       textarea#text.border-2.border-gray-600(name="text" required)
       button.rounded.shadow.px-3.py-2.text-bold.uppercase.bg-gray-800.text-white.mt-2(type="submit") Add Comment

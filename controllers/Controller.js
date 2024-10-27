@@ -56,9 +56,11 @@ export class Controller {
       if (renderer) {
         res.header("Content-Type", "text/html");
 
-        return renderer({
-          [renderOption.modelPayloadName ?? this.model.modelName]: instance,
-        });
+        return res.send(
+          renderer({
+            [renderOption.modelPayloadName ?? this.model.modelName]: instance,
+          })
+        );
       }
 
       res.header("Content-Type", "application/json");
@@ -74,9 +76,7 @@ export class Controller {
    */
   post(redirectTo) {
     return async (req, res) => {
-      const data = req.data;
-
-      await this.model.create(data);
+      await this.model.create(req.body);
 
       if (typeof redirectTo === "function") {
         return res.redirect(redirectTo(req, res));

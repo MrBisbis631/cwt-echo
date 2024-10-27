@@ -18,7 +18,7 @@ const quoteController = new QuoteController();
 // all quotes
 app.get(
   "/",
-  commentController.get(quoteRenderer, {}, { modelPayloadName: "quotes" })
+  quoteController.get(quoteRenderer, {}, { modelPayloadName: "quotes" })
 );
 
 //  see comments on one quote
