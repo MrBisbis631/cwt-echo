@@ -26,5 +26,9 @@ Cwt Echo is a social media where you can post quotes and comment on them.
 Defined in `./index.js`
 
 - `GET /` - Home page and list of top quotes
+- `GET /:id` - Comments on `Quote` with id `id`.
 - `POST /quote` - Create a new quote
 - `POST /quote/:id/comment` - Create a new comment on a quote
+
+## Note
+⚠️ if you have problems with installations use node `23.*` on windows.
